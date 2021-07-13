@@ -1,0 +1,49 @@
+{
+  "name": "@micro-site/layout",
+  "version": "0.0.0",
+  "description": "Application Shell",
+  "scripts": {
+    "serve": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btoaelbore/bto-ui-shell.git"
+  },
+  "keywords": [],
+  "author": "BetterTradeOff <dev@bettertradoff.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/btoaelbore/bto-ui-shell/issues"
+  },
+  "homepage": "https://github.com/btoaelbore/bto-ui-shell#readme",
+  "dependencies": {
+    "@micro-site/shared": "file:../shared",
+    "@qoi/es-modules": "^0.0.2",
+    "es-module-shims": "^0.12.1",
+    "express": "^4.17.1",
+    "html-minifier": "^4.0.0",
+    "http-proxy": "^1.18.1"
+  },
+  "devDependencies": {
+    "@qoi/build": "^0.0.8",
+    "@qoi/cli": "^0.0.9",
+    "@rollup/plugin-replace": "^2.4.2",
+    "@types/express": "^4.17.13",
+    "@types/http-proxy": "^1.17.7",
+    "@types/node": "^16.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "@vitejs/plugin-vue": "^1.2.5",
+    "@vue/compiler-sfc": "^3.1.4",
+    "concurrently": "^6.2.0",
+    "eslint": "^7.30.0",
+    "eslint-plugin-import": "^2.23.4",
+    "postcss": "^8.3.5",
+    "qoi-preset-vue": "^0.0.3",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-ts-paths-resolve": "^1.4.1",
+    "sass": "^1.35.2",
+    "typescript": "^4.3.5",
+    "vite": "^2.4.2"
+  }
+}
