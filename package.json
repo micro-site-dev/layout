@@ -18,8 +18,8 @@
     "url": "https://github.com/btoaelbore/bto-ui-shell/issues"
   },
   "homepage": "https://github.com/btoaelbore/bto-ui-shell#readme",
-  "dependencies": {
-    "@micro-site/shared": "file:../shared/dist"
+  "peerDependencies": {
+    "@micro-site/shared": ">=^0.0.1"
   },
   "devDependencies": {
     "@qoi/build": "^0.0.8",

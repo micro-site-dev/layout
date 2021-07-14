@@ -1,7 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router'
+import type { Plugin } from 'vue'
 
 import { createStore, Reducer, AnyAction, Store, applyMiddleware } from 'redux'
-import { addToStore, Action, createRoute  } from '@micro-site/shared'
+import { addToStore, Action, createRoute, AppConfig  } from '@micro-site/shared'
 
 export interface Menu {
   text?: string
@@ -17,6 +18,7 @@ export interface BootstrapState {
   routes?: RouteRecordRaw[], 
   menus?: Menu[]
   stores?: Stores[]
+  plugins?: Plugin[]
   completed?: boolean
 }
 
@@ -43,6 +45,23 @@ const reducer: Reducer<BootstrapState> = (
   }
 }
 
+const generateStores = (
+  stores: { 
+    key: string, 
+    module: string, 
+    global?: string 
+  }[] = []
+) => {
+  return Promise.all(stores.map(async moduleStore => {
+    const store = await import(/* @vite-ignore */  moduleStore.module)
+    const value: Stores = {
+      key: moduleStore.key,
+      store: store.default ?? globalThis[moduleStore.global]
+    }
+    return value
+  }))  
+}
+
 const service = (store: Store<BootstrapState, AnyAction>) => 
   (next: (action: Action) => void) => 
   async (action: Action) => {
@@ -51,32 +70,18 @@ const service = (store: Store<BootstrapState, AnyAction>) =>
 
     switch (action.type) {
       case 'GET_CONFIG': 
-        const stores: Stores[] = []
-
         const response = await fetch('/config.json')
-        const packages = await response.json()
+        const packages: AppConfig = await response.json()
 
+        const stores = await generateStores(packages.stores)
 
-        if (packages.stores) {
-          await Promise.all(packages.stores.map(async moduleStore => {
-            const store = await import(/* @vite-ignore */  moduleStore.module)
-            stores.push({ 
-              key: moduleStore.id, 
-              store: store.default ?? globalThis[moduleStore.global]
-            })
-          }))  
-        }
+        const routes = await Promise.all(packages.routes?.map(pkg => {
+          return createRoute({ route: pkg, globalPath: globalThis[pkg.global] })
+        }))
 
-        const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
-          return createRoute(pkg, globalThis[pkg.global])
-        })
-  
         store.dispatch({ 
           type: 'bootstrap', 
-          payload: { 
-            routes, 
-            stores
-          }
+          payload: { routes, stores }
         })
     }
 }
