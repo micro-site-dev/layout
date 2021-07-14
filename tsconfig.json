@@ -9,6 +9,7 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "allowJs": true,
     "paths": {
       "@micro-site/shared": [ "./node_modules/@micro-site/shared/src" ]
     }

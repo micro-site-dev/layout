@@ -28,8 +28,8 @@ const reducer: Reducer<BootstrapState> = (
     case 'bootstrap':
       const model = action.payload as BootstrapState
 
-      state.routes = model.routes
-      state.stores = model.stores
+      state.routes = model.routes || []
+      state.stores = model.stores || []
 
       state.stores.forEach(({ key, store }) => {
         addToStore(key, store)
@@ -56,13 +56,16 @@ const service = (store: Store<BootstrapState, AnyAction>) =>
         const response = await fetch('/config.json')
         const packages = await response.json()
 
-        await Promise.all(packages.stores.map(async moduleStore => {
-          const store = await import(/* @vite-ignore */  moduleStore.module)
-          stores.push({ 
-            key: moduleStore.id, 
-            store: store.default ?? globalThis[moduleStore.global]
-          })
-        }))
+
+        if (packages.stores) {
+          await Promise.all(packages.stores.map(async moduleStore => {
+            const store = await import(/* @vite-ignore */  moduleStore.module)
+            stores.push({ 
+              key: moduleStore.id, 
+              store: store.default ?? globalThis[moduleStore.global]
+            })
+          }))  
+        }
 
         const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
           return createRoute(pkg, globalThis[pkg.global])
